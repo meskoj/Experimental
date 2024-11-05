@@ -61,16 +61,8 @@ class ArucoNode(Node):
                     for i in range(len(marker_ids)):
                         marker_id = marker_ids[i]
                         if searched_marker == marker_id:
-                            marker_corners = corners[i][0]
-                            center_x = int(marker_corners[0][0] + marker_corners[1][0] + marker_corners[2][0] + marker_corners[3][0]) / 4
-                            center_y = int(marker_corners[0][1] + marker_corners[1][1] + marker_corners[2][1] + marker_corners[3][1]) / 4
-                            radius = int(abs(marker_corners[2][0] - marker_corners[0][0])/2)
-                            center = (int(center_x), int(center_y))
-
-                            self.get_logger().info(str(corners[i]))
-                            self.get_logger().info(str(center))
                             outputImage = cv_image.copy()
-                            outputImage = cv2.circle(cv_image, center, radius, (255,0,0), 2)#cv2.aruco.drawDetectedMarkers(cv_image, corners, marker_ids)
+                            outputImage = cv2.aruco.drawDetectedMarkers(cv_image, corners, marker_ids)
                             window_name = f"Image window {marker_id}_{i}"
                             cv2.imshow(window_name, outputImage)    
                             cv2.waitKey(0)

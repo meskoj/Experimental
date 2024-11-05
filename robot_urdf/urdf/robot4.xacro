@@ -126,18 +126,42 @@
     <limit effort="10000" velocity="1000"/>
     <joint_properties damping="1.0" friction="1.0"/>
   </joint>
-  
-  <link name="camera_link">
+
+ <link name="camera_link_connection">
 	    <collision>
-	      <origin xyz="0 0 0.025" rpy="0 0 0"/>
+	      <origin xyz="0 0 0.1" rpy="0 0 0"/>
 	      <geometry>
-		<box size="0.05 0.05 0.05"/>
+		<box size="0.1 0.1 0.25"/>
 	      </geometry>
 	    </collision>
 	    <visual>
-	      <origin xyz="0 0 0.025" rpy="0 0 0"/>
+	      <origin xyz="0 0 0.1" rpy="0 0 0"/>
 	      <geometry>
-		<box size="0.05 0.05 0.05"/>
+		<box size="0.05 0.05 0.25"/>
+	      </geometry>
+	      <material name="red">
+		<color rgba="1 0 0 1"/>
+	      </material>
+	    </visual>
+	    <inertial>
+	      <mass value="1e-5" />
+	      <origin xyz="0 0 0" rpy="0 0 0"/>
+	      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+	    </inertial> 
+  </link>
+
+
+  <link name="camera_link">
+	    <collision>
+	      <origin xyz="0 0 0" rpy="0 0 0"/>
+	      <geometry>
+		<box size="0.07 0.07 0.07"/>
+	      </geometry>
+	    </collision>
+	    <visual>
+	      <origin xyz="0 0 0" rpy="0 0 0"/>
+	      <geometry>
+		<box size="0.07 0.07 0.07"/>
 	      </geometry>
 	      <material name="red">
 		<color rgba="1 0 0 1"/>
@@ -152,11 +176,17 @@
   
   <joint name="camera_joint" type="fixed">
 	    <axis xyz="0 0 1" />
-	    <origin xyz="0.23 0 0" rpy="0 0 0"/>
-	    <parent link="link_chassis"/>
+	    <origin xyz="0 0 0.27" rpy="0 0 0"/>
+	    <parent link="camera_link_connection"/>
 	    <child link="camera_link"/> 
 	 </joint>
 
+  <joint name="camera_link_joint" type="fixed">
+	    <axis xyz="0 0 1" />
+	    <origin xyz="0.2 0 0.05" rpy="0 0 0"/>
+	    <parent link="link_chassis"/>
+	    <child link="camera_link_connection"/> 
+	 </joint>
 
 
 </robot>
