@@ -187,6 +187,17 @@
 	    <parent link="link_chassis"/>
 	    <child link="camera_link_connection"/> 
 	 </joint>
-
+  
+   <transmission name="cam_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="camera_joint">
+      <hardwareInterface>hardwareInterface/EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="motor_cam">
+        <hardwareInterface>hardwareInterface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+   </transmission>
+   
 
 </robot>
