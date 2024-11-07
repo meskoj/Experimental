@@ -32,7 +32,7 @@ def generate_launch_description():
     
     marker_detector_node = Node(
         package='ros2_aruco',
-        executable='marker_detector',
+        executable='marker_detector_cam',
         name='marker_detector',
         output='screen'
     )

@@ -174,7 +174,7 @@
 	    </inertial> 
   </link>
   
-  <joint name="camera_joint" type="fixed">
+  <joint name="camera_joint" type="continuous">
 	    <axis xyz="0 0 1" />
 	    <origin xyz="0 0 0.27" rpy="0 0 0"/>
 	    <parent link="camera_link_connection"/>

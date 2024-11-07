@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from cv_bridge import CvBridge
-from geometry_msgs.msg import Twist
+from std_msgs.msg import Float64MultiArray
 import time
 import cv2
 from sensor_msgs.msg import Image
@@ -14,18 +14,24 @@ class ArucoNode(Node):
     def __init__(self):
         super().__init__('aruco_node')
         
-        self.publisher_ = self.create_publisher(Twist, '/cmd_vel', 10)
+        #self.publisher_ = self.create_publisher(Twist, '/cmd_vel', 10)
         self.create_subscription(Image, '/camera/image_raw', self.image_callback, 10) #self.sub = self.create_subscription(CompressedImage, '/camera/image_raw', self.image_callback, 10)
+        self.controller_pub = self.create_publisher(Float64MultiArray, '/joint_cam_controller/commands', 10)
         self.markers_pub = self.create_publisher(ArucoMarkers, 'aruco_markers', 10)
         
         self.bridge = CvBridge()
         self.markers_list = []
 
+        msg = Float64MultiArray()
+        msg.data = [2]  # Command to publish
+        self.controller_pub.publish(msg)
+        self.get_logger().info(f"Publishing: {msg.data}")
+
         # Start spinning
-        msg = Twist()
-        msg.angular.z = 1.5
-        self.publisher_.publish(msg)
-        self.get_logger().info('Publishing: "%s"' % msg)
+        # msg = Twist()
+        # msg.angular.z = 1.5
+        # self.publisher_.publish(msg)
+        # self.get_logger().info('Publishing: "%s"' % msg)
         
         self.aruco_dictionary = cv2.aruco.Dictionary_get(cv2.aruco.DICT_ARUCO_ORIGINAL)
         self.aruco_parameters = cv2.aruco.DetectorParameters_create()
@@ -35,9 +41,6 @@ class ArucoNode(Node):
         cv_image = self.bridge.imgmsg_to_cv2(img,desired_encoding='mono8')
         corners, marker_ids, rejected = cv2.aruco.detectMarkers(cv_image,self.aruco_dictionary,parameters=self.aruco_parameters)
 
-        #cv2.aruco.drawDetectedMarkers(cv_image,corners,marker_ids)
-        #cv2.imshow('Detected Markers', cv_image)
-        #cv2.waitKey(100)
         if found_all == False:
             if marker_ids is not None:      
                 for i in range(len(marker_ids)):
@@ -65,7 +68,7 @@ class ArucoNode(Node):
                             outputImage = cv2.aruco.drawDetectedMarkers(cv_image, corners, marker_ids)
                             window_name = f"Image window {marker_id}_{i}"
                             cv2.imshow(window_name, outputImage)    
-                            cv2.waitKey(0)
+                            cv2.waitKey(1)
                             searched_marker = None
 
 def main(args=None):

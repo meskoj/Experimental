@@ -73,7 +73,7 @@ class ArucoNode(Node):
                             outputImage = cv2.circle(cv_image, center, radius, (255,0,0), 2)#cv2.aruco.drawDetectedMarkers(cv_image, corners, marker_ids)
                             window_name = f"Image window {marker_id}_{i}"
                             cv2.imshow(window_name, outputImage)    
-                            cv2.waitKey(0)
+                            cv2.waitKey(1)
                             searched_marker = None
 
 def main(args=None):
