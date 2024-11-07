@@ -129,15 +129,15 @@
 
  <link name="camera_link_connection">
 	    <collision>
-	      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+	      <origin xyz="0 0 0.05" rpy="0 0 0"/>
 	      <geometry>
-		<box size="0.1 0.1 0.25"/>
+		<box size="0.05 0.05 0.15"/>
 	      </geometry>
 	    </collision>
 	    <visual>
-	      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+	      <origin xyz="0 0 0.05" rpy="0 0 0"/>
 	      <geometry>
-		<box size="0.05 0.05 0.25"/>
+		<box size="0.05 0.05 0.15"/>
 	      </geometry>
 	      <material name="red">
 		<color rgba="1 0 0 1"/>
@@ -176,7 +176,7 @@
   
   <joint name="camera_joint" type="continuous">
 	    <axis xyz="0 0 1" />
-	    <origin xyz="0 0 0.27" rpy="0 0 0"/>
+	    <origin xyz="0 0 0.15" rpy="0 0 0"/>
 	    <parent link="camera_link_connection"/>
 	    <child link="camera_link"/> 
 	 </joint>

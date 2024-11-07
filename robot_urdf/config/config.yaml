@@ -4,15 +4,9 @@ controller_manager:
     use_sim_time: true
 
     joint_cam_controller:
-      type: forward_command_controller/ForwardCommandController
+      type: velocity_controllers/JointGroupVelocityController
 
 joint_cam_controller:
   ros__parameters:
     joints:
       - camera_joint
-    interface_name: position
-    command_interfaces:
-      - position
-    state_interfaces:
-      - position
-      - velocity

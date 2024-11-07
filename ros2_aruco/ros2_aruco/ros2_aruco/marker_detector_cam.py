@@ -17,13 +17,13 @@ class ArucoNode(Node):
         #self.publisher_ = self.create_publisher(Twist, '/cmd_vel', 10)
         self.create_subscription(Image, '/camera/image_raw', self.image_callback, 10) #self.sub = self.create_subscription(CompressedImage, '/camera/image_raw', self.image_callback, 10)
         self.controller_pub = self.create_publisher(Float64MultiArray, '/joint_cam_controller/commands', 10)
-        self.markers_pub = self.create_publisher(ArucoMarkers, 'aruco_markers', 10)
+        self.markers_pub = self.create_publisher(Image, 'aruco_markers', 10)
         
         self.bridge = CvBridge()
         self.markers_list = []
 
         msg = Float64MultiArray()
-        msg.data = [2]  # Command to publish
+        msg.data = [1.0]  # Command to publish
         self.controller_pub.publish(msg)
         self.get_logger().info(f"Publishing: {msg.data}")
 
@@ -49,14 +49,15 @@ class ArucoNode(Node):
                         self.markers_list.append(marker_id)
                         self.get_logger().info(str(marker_id))
                         #self.get_logger().info(f'Markers list: {", ".join(map(str, self.markers_list))}')
-            if len(self.markers_list) == 5:
+            if len(self.markers_list) == 3:
                     self.markers_list.sort()
                     self.get_logger().info(f'Found all markers. Markers list: {", ".join(map(str, self.markers_list))}')
                     found_all = True
         else:
             if searched_marker is None:
                 if(len(self.markers_list)== 0):
-                     self.get_logger().info("Finish")
+                    self.get_logger().info("Finish")
+                    time.sleep(10000) 
                 else:
                     searched_marker = self.markers_list.pop(0)
             else:
@@ -67,6 +68,10 @@ class ArucoNode(Node):
                             outputImage = cv_image.copy()
                             outputImage = cv2.aruco.drawDetectedMarkers(cv_image, corners, marker_ids)
                             window_name = f"Image window {marker_id}_{i}"
+                            msg = Image()
+                            msg.data = outputImage
+                            self.markers_pub.publish(msg)
+                            self.get_logger().info(f"Publishing: {msg.data}")
                             cv2.imshow(window_name, outputImage)    
                             cv2.waitKey(1)
                             searched_marker = None
