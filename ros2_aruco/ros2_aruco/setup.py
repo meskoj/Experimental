@@ -22,6 +22,7 @@ setup(
         'console_scripts': [
             'aruco_node = ros2_aruco.aruco_node:main',
             'aruco_generate_marker = ros2_aruco.aruco_generate_marker:main',
+            'marker_detector = ros2_aruco.marker_detector:main',
             'marker_detector_cam = ros2_aruco.marker_detector_cam:main'
         ],
     },

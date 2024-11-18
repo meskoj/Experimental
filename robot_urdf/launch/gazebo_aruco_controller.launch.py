@@ -32,8 +32,15 @@ def generate_launch_description():
     
     marker_detector_node = Node(
         package='ros2_aruco',
-        executable='marker_detector',
+        executable='marker_detector_cam',
         name='marker_detector',
+        output='screen'
+    )
+    
+    camera_position_controller = Node(
+        package='controller_manager',
+        executable='spawner.py',
+        arguments=['joint_cam_controller'],
         output='screen'
     )
    
@@ -50,6 +57,7 @@ def generate_launch_description():
         joint_state_publisher_node,
         spawn_entity,
         marker_detector_node,
+        camera_position_controller,
         ExecuteProcess(
             cmd=['gazebo', '--verbose', default_world_path, '-s', 'libgazebo_ros_factory.so', '-s', 'libgazebo_ros_init.so'],
             output='screen'),
