@@ -11,12 +11,14 @@ class ArucoNode(Node):
 
     def __init__(self, initial_state):
         super().__init__('aruco_node')
+        # Initialize the state machine with the initial state
         self.state = initial_state
 
+        # Create the subscriber for the camera image and the publisher for the velocity commands and the markers
         self.create_subscription(
             Image, '/camera/image_raw', self.image_callback, 10)
         self.publisher_ = self.create_publisher(Twist, '/cmd_vel', 10)
-        self.markers_pub = self.create_publisher(Image, 'aruco_markers', 10)
+        self.markers_pub = self.create_publisher(Image, '/aruco_markers', 10)
 
         self.bridge = CvBridge()
         self.markers_list = []
@@ -45,7 +47,7 @@ class ArucoNode(Node):
                 for i in range(len(marker_ids)):
                     if marker_ids[i] not in self.markers_list:
                         self.markers_list.append(marker_ids[i])
-                        self.get_logger().info(str(marker_ids[i]))
+                        self.get_logger().info('Added to list: "%s"' % str(marker_ids[i]))
             if len(self.markers_list) == 5:
                 # Reorder markers and change state
                 self.markers_list.sort()
@@ -60,6 +62,8 @@ class ArucoNode(Node):
                     self.state = "finish"
                 else:
                     self.searched_marker = self.markers_list.pop(0)
+                    self.get_logger().info(
+                        f"Searching marker {self.searched_marker}")
             else:
                 if marker_ids is not None:
                     for i in range(len(marker_ids)):
@@ -72,14 +76,16 @@ class ArucoNode(Node):
                             # Check if the marker is centered and publish the image
                             if abs(marker_center[0] - image_center[0]) < 10 and abs(marker_center[1] - image_center[1]) < 10:
                                 outputImage = cv_image.copy()
-                                outputImage = cv2.aruco.drawDetectedMarkers(
-                                    cv_image, corners, marker_ids)
-                                window_name = f"Image window {self.searched_marker}"
+
+                                # Calculate the radius of the circle
+                                marker_radius = int(max(cv2.norm(corners[i][0][0] - corners[i][0][2]),cv2.norm(corners[i][0][1] - corners[i][0][3])) / 2)
+                                cv2.circle(outputImage, (int(marker_center[0]), int(marker_center[1])), marker_radius, (0, 255, 0), 2)
+                                cv2.putText(outputImage, f"id={int(marker_ids[i])}", (int(marker_center[0]), int(marker_center[1]) - marker_radius - 10),
+                                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+
                                 self.markers_pub.publish(
-                                    self.bridge.cv2_to_imgmsg(cv_image, "bgr8"))
+                                    self.bridge.cv2_to_imgmsg(outputImage, "bgr8"))
                                 self.get_logger().info(f"Published marker")
-                                cv2.imshow(window_name, outputImage)
-                                cv2.waitKey(10000)
                                 self.searched_marker = None
 
         elif self.state == "finish":
@@ -96,6 +102,7 @@ class ArucoNode(Node):
 
 
 def main(args=None):
+    # Wait 10 seconds for the system to be ready
     time.sleep(10)
     rclpy.init(args=args)
 
