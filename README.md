@@ -27,7 +27,7 @@ Is possible to launch the launch files containing the two scripts using the foll
   ros2 launch robot_urdf gazebo_aruco_controller.launch.py
  ```
 
-To visualize the topic where the image are published, I suggest to use, selecting as topic `'/aruco_markers'`
+To visualize the topic where the images are published, I suggest to use `rqt_image_view` , selecting as topic `'/aruco_markers'`
   ```bash
 ros2 run rqt_image_view rqt_image_view
  ```
